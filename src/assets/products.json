@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "brand": "MSR",
+        "name": "Msr Hubba Hubba NX",
+        "price": "400",
+        "image": "" 
+    },
+    {
+        "id": 2,
+        "brand": "Zpack",
+        "name": "Zpack Duplex",
+        "price": "600",
+        "image": "" 
+    },
+    {
+        "id": 3,
+        "brand": "Forclaz",
+        "name": "Forclaz trek 900",
+        "price": "130",
+        "image": "" 
+    }
+]

@@ -1,0 +1,5 @@
+<app-search (filter)="getProducts($event)"></app-search>
+<div *ngFor="let p of observable | async">
+    <div>{{p.name}}</div>
+    <div>{{p.price}}</div>
+</div>

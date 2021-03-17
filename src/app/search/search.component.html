@@ -1,0 +1,15 @@
+<div>
+    <div id="search_bar">
+        <label for="search">Recherche</label>
+        <input id="search" type="text" (keyup)="filterChange()">
+    </div>
+    <br>
+    <div id="filter">
+        <p>Prix</p>
+        <label for="minPrice">Min</label>
+        <input type="number" id="minPrice" value="0" step="1" min="0" (change)="filterChange()">
+        <label for="maxPrice">Max</label>
+        <input type="number" id="maxPrice" value="0" step="1" min="0" (change)="filterChange()">
+    </div>
+    <br><br>
+</div>
