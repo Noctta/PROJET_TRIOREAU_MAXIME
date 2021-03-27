@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../product.service'
 import { Observable, of } from 'rxjs'
+import { AddReference } from 'src/shared/actions/panier.action';
+import { Store } from '@ngxs/store';
 
 @Component({
   selector: 'app-list',
@@ -11,7 +13,7 @@ export class ListComponent implements OnInit {
 
   observable : Observable<any>
 
-  constructor(private service: ProductService) { }
+  constructor(private service: ProductService, private store: Store) { }
 
   ngOnInit(): void {
     this.observable = this.service.getProducts(); 
@@ -19,5 +21,9 @@ export class ListComponent implements OnInit {
 
   async getProducts(filter = null){
     this.observable = await this.service.getProducts(filter);
+  }
+
+  addPanier(p){
+    this.store.dispatch(new AddReference({id: p.id, brand: p.brand, name: p.name, price: p.price, capacity: p.capacity, image: p.image}))
   }
 }

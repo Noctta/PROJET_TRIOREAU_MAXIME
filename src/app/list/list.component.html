@@ -2,4 +2,8 @@
 <div *ngFor="let p of observable | async">
     <div>{{p.name}}</div>
     <div>{{p.price}}</div>
+    <a [routerLink]="['details', p.id]">Détail</a>
+    <button class="" (click)="addPanier(p)">Ajoutez au panier</button>
+    <br>
+    <br>
 </div>

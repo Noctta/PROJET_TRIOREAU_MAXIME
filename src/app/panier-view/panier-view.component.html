@@ -1,0 +1,7 @@
+<div *ngFor="let p of products | async">
+    <div>Name : {{p.name}}</div>
+    <div>Price : {{p.price}}</div>
+    <button (click)="deleteProduct(p)">Supprimer</button>
+    <br>
+    <br>
+</div>

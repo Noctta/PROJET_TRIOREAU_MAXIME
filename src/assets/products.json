@@ -4,6 +4,7 @@
         "brand": "MSR",
         "name": "Msr Hubba Hubba NX",
         "price": "400",
+        "capacity": "1",
         "image": "" 
     },
     {
@@ -11,6 +12,7 @@
         "brand": "Zpack",
         "name": "Zpack Duplex",
         "price": "600",
+        "capacity": "2",
         "image": "" 
     },
     {
@@ -18,6 +20,7 @@
         "brand": "Forclaz",
         "name": "Forclaz trek 900",
         "price": "130",
+        "capacity": "1",
         "image": "" 
     }
 ]

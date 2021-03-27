@@ -1,0 +1,9 @@
+<div *ngFor="let p of products | async">
+    <div>Brand : {{p.brand}}</div>
+    <div>Name : {{p.name}}</div>
+    <div>Price : {{p.price}}</div>
+    <div>Capacity : {{p.capacity}}</div>
+    <button class="" (click)="addPanier(p)">Ajoutez au panier</button>
+    <br>
+    <br>
+</div>
