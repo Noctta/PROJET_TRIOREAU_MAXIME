@@ -13,7 +13,6 @@ export class PanierViewComponent implements OnInit {
   constructor(private store: Store) { }
 
   ngOnInit(): void {
-    // console.log(this.store.select(state => state.panier.panier));
     this.products = this.store.select(state => state.panier.panier);
   }
 

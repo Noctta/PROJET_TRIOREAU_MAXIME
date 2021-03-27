@@ -21,7 +21,6 @@ export class PanierState {
     @Action(AddReference) add(
         { getState, patchState }: StateContext<PanierStateModel>, 
         { payload }: AddReference) {
-            console.log(payload);
             const state = getState();
             patchState({ panier: [...state.panier, payload] });
         }
