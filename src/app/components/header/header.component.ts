@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { ProductService } from '../../service/product.service';
 
 @Component({
   selector: 'app-header',
@@ -8,11 +10,12 @@ import { Store } from '@ngxs/store';
 })
 export class HeaderComponent implements OnInit {
 
+  observable : Observable<any>
+  
   nbElementPanier: number = 0;
-  constructor(private store: Store) { }
+  constructor(private service: ProductService, private store: Store) { }
 
   ngOnInit(): void {
     this.store.select(state => state.panier.panier.length).subscribe(l => this.nbElementPanier = l);
   }
-
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProductService } from '../product.service';
+import { ProductService } from '../../service/product.service';
 import { Observable } from 'rxjs';
 import { AddReference } from 'src/shared/actions/panier.action';
 import { Store } from '@ngxs/store';

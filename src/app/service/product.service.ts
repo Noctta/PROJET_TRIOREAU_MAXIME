@@ -12,7 +12,7 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   public getProducts(filter = null){    
-    let products = this.http.get(environment.baseUrl);
+    let products = this.http.get(environment.baseUrl + "/catalogue");
 
     if(filter){
       products = products.pipe(map(product =>{
@@ -25,7 +25,7 @@ export class ProductService {
   }
 
   public getDetail(id) : Observable<any> {
-    return this.http.get(environment.baseUrl).pipe(map(data => {
+    return this.http.get(environment.baseUrl + "/catalogue").pipe(map(data => {
       let t: any = data;
       return t.filter(x => x.id == id); 
     }));    

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl : '/assets/products.json'
+  baseUrl : 'https://nfe-trioreau.herokuapp.com/api'
 };
 
 /*

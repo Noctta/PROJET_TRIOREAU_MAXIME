@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl : '/assets/products.json'
+  baseUrl : 'https://nfe-trioreau.herokuapp.com/api'
 };

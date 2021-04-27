@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../product.service'
+import { ProductService } from '../../service/product.service'
 import { Observable, of } from 'rxjs'
 import { AddReference } from 'src/shared/actions/panier.action';
 import { Store } from '@ngxs/store';
@@ -24,6 +24,6 @@ export class ListComponent implements OnInit {
   }
 
   addPanier(p){
-    this.store.dispatch(new AddReference({id: p.id, brand: p.brand, name: p.name, price: p.price, capacity: p.capacity, image: p.image}))
+    this.store.dispatch(new AddReference({id: p.id, brand: p.brand, name: p.name, price: p.price, capacity: p.capacity}))
   }
 }

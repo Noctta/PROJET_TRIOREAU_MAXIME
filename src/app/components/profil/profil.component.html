@@ -1,0 +1,28 @@
+<h2>Modifier mes informations</h2>
+<form id="main_form" method="post">
+    <label for="name_form" class="form-label">Nom </label><br>
+    <input id="name_form" type="text" placeholder="Nom" class="form-control" [(ngModel)]="nom" [ngModelOptions]="{standalone: true}"><br>
+
+    <label for="firstname_form" class="form-label">Prénom </label><br>
+    <input id="firstname_form" type="text" placeholder="Prénom" class="form-control" [(ngModel)]="prenom" [ngModelOptions]="{standalone: true}"><br>
+
+    <label for="mail_form" class="form-label">Email</label>
+    <input id="mail_form" type="email" placeholder="Email" class="form-control" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"><br>
+
+    <label for="username_form" class="form-label">Login </label><br>
+    <input id="username_form" placeholder="username" class="form-control" [(ngModel)]="login" [ngModelOptions]="{standalone: true}"><br>
+
+    <br>
+    <br>
+    <input id="submit" (click)="validateForm()" type="submit" value="Enregistrer" class="btn btn-primary">
+    <div *ngIf="displayError == true">
+        <p style="color:red;">Informations manquantes ou invalides</p>
+    </div>
+</form>
+<br>
+<h3>Déconnexion</h3>
+<input type="button" (click)="logout()" value="se déconnecter">
+<br>
+
+
+

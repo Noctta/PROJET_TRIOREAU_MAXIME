@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ListComponent } from './list/list.component';
-import { SearchComponent } from './search/search.component';
-import { DetailComponent } from './detail/detail.component';
+import { ListComponent } from '../components/list/list.component';
+import { SearchComponent } from '../components/search/search.component';
+import { DetailComponent } from '../components/detail/detail.component';
 
 const appRoutes: Routes = [
   { path: "", component: ListComponent },
