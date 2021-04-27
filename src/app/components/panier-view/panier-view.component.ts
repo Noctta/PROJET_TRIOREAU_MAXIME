@@ -21,4 +21,7 @@ export class PanierViewComponent implements OnInit {
     this.ngOnInit();
   }
 
+  buy(){
+    alert("Vous avez passé votre commande");
+  }
 }

@@ -13,7 +13,6 @@
         "symfony/yaml": "2.*"
     },
     "autoload": {
-       
-
+        "psr-0": {"": "./api/model"}
     }
 }

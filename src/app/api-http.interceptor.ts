@@ -28,17 +28,17 @@ export class ApiHttpInterceptor implements HttpInterceptor {
 
           let tab : Array<String> ;
           let headerAutorization = evt.headers.get("Authorization");
-          
+
           if (headerAutorization != null ) {
-            tab = headerAutorization.split(/Bearer\s+(.*)$/i);
-            if (tab.length > 1) {
-              this.jwtToken = tab [1]; 
-            }
-          }else{
-            if(evt.status == 202){
+            if(headerAutorization == "deleted"){
               this.jwtToken = "";
               this.router.navigate(['/connexion']);
-            }
+            }else{
+              tab = headerAutorization.split(/Bearer\s+(.*)$/i);
+              if (tab.length > 1) {
+                this.jwtToken = tab [1]; 
+              }
+            }       
           }
         }
       }, ( error : HttpErrorResponse ) => {

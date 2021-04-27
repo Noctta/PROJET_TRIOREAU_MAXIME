@@ -7,11 +7,14 @@ use Slim\Factory\AppFactory;
 use Tuupola\Middleware\HttpBasicAuthentication;
 use \Firebase\JWT\JWT;
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/bootstrap.php';
+
 $app = AppFactory::create();
 
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(false, true, true);
+$app->addBodyParsingMiddleware();
 
 const JWT_SECRET = "makey1234567";
 
@@ -25,7 +28,7 @@ $options = [
     "algorithm" => ["HS256"],
     "secret" => JWT_SECRET,
     "path" => ["/api"],
-    "ignore" => ["/hello", "/api/hello", "/api/login", "/api/createUser"],
+    "ignore" => ["/api/login"],
     "error" => function ($response, $arguments) {
         $data = array('ERREUR' => 'Connexion', 'ERREUR' => 'JWT Non valide');
         $response = $response->withStatus(401);
@@ -34,107 +37,147 @@ $options = [
 ];
 
 
-// function options(Request $request, Response $response)
-// {
-//     // Evite que le front demande une confirmation à chaque modification
-//     $response = $response->withHeader("Access-Control-Max-Age", 60);
-
-//     return addHeaders($response, $request->getHeader('Origin'));
-// }
-
-// $app->options('/api/*', function ($request, $response) {
-//     return options($request, $response);
-// });
-
 $app->post('/api/login', function (Request $request, Response $response, $args) {
-    $issuedAt = time();
-    $expirationTime = $issuedAt + 60000;
-    $payload = array(
-        'userid' => "12345",
-        'email' => "maxime@gmail.com",
-        'pseudo' => "maxou",
-        'iat' => $issuedAt,
-        'exp' => $expirationTime
-    );
+    global $entityManager;
+
+    $body = $request->getParsedBody();
+
+    $clientRepository = $entityManager->getRepository('Client');
+    $client = $clientRepository->findOneBy(array('login' => $body['login'], 'password' => $body['password']));
+
+    if ($client) {
+        $issuedAt = time();
+        $expirationTime = $issuedAt + 60000;
+
+        $payload = array(
+            'userid' => $client->getId(),
+            'email' => $client->getEmail(),
+            'login' => $client->getLogin(),
+            'iat' => $issuedAt,
+            'exp' => $expirationTime
+        );
+
+        $token_jwt = JWT::encode($payload, JWT_SECRET, "HS256");
+
+        $client->setToken($token_jwt);
+        $entityManager->persist($client);
+        $entityManager->flush();
+
+        $response = $response->withHeader("Authorization", "Bearer {$token_jwt}");
+        $response->getBody()->write(json_encode($client));
+    } else {
+        $response = $response->withStatus(404);
+    }
 
     $response = addCorsHeaders($response);
-    $token_jwt = JWT::encode($payload, JWT_SECRET, "HS256");
-    $response = $response->withHeader("Authorization", "Bearer {$token_jwt}");
+
     return $response;
 });
 
 
-$app->get('/api/client/{id}', function (Request $request, Response $response, $args) {
-    $array = [];
-    $array["nom"] = "trioreau";
-    $array["prenom"] = "maxime";
+$app->post('/api/logout', function (Request $request, Response $response, $args) {
 
+    $response = $response->withHeader("Authorization", "deleted");
+    $response = $response->withStatus(202);
     $response = addCorsHeaders($response);
-    $response->getBody()->write(json_encode($array));
-    return $response;
-});
 
-$app->get('/hello/{name}', function (Request $request, Response $response, $args) {
-    $array = [];
-    $array["nom"] = $args['name'];
-
-    $response = addCorsHeaders($response);
-    $response->getBody()->write(json_encode($array));
     return $response;
 });
 
 
-$app->get('/api/hello/{name}', function (Request $request, Response $response, $args) {
-    $array = [];
-    $array["nom"] = $args['name'];
+$app->get('/api/client', function (Request $request, Response $response, $args) {
+    global $entityManager;
+
+    $authHeader = $request->getHeader("Authorization");
+    $token = preg_split("/[\s,]+/", $authHeader[0])[1];
+
+    $clientRepository = $entityManager->getRepository('Client');
+    $client = $clientRepository->findOneBy(array('token' => $token));
+
+    if ($client) {
+        $data = array(
+            "id" => $client->getId(),
+            "nom" => $client->getNom(),
+            "prenom" => $client->getPrenom(),
+            "email" => $client->getEmail(),
+            "login" => $client->getLogin(),
+        );
+        $response->getBody()->write(json_encode($data));
+    } else {
+        $response = $response->withStatus(404);
+    }
+
 
     $response = addCorsHeaders($response);
-    $response->getBody()->write(json_encode($array));
+
     return $response;
 });
+
+
+$app->put('/api/client', function (Request $request, Response $response, $args) {
+    global $entityManager;
+
+    $authHeader = $request->getHeader("Authorization");
+    $token = preg_split("/[\s,]+/", $authHeader[0])[1];
+
+    $body = $request->getParsedBody();
+
+    $clientRepository = $entityManager->getRepository('Client');
+    $client = $clientRepository->findOneBy(array('token' => $token));
+
+    if ($client) {
+        $client->setNom($body['nom']);
+        $client->setPrenom($body['prenom']);
+        $client->setEmail($body['email']);
+        $client->setLogin($body['login']);
+
+        $entityManager->persist($client);
+        $entityManager->flush();
+
+        $response->getBody()->write(json_encode($client));
+    } else {
+        $response = $response->withStatus(404);
+    }
+
+    $response = addCorsHeaders($response);
+    return $response;
+});
+
 
 $app->get('/api/catalogue', function (Request $request, Response $response, $args) {
-    $flux = '[
-        {
-            "id": 1,
-            "brand": "MSR",
-            "name": "Msr Hubba Hubba NX",
-            "price": "400",
-            "capacity": "1",
-            "image": "" 
-        },
-        {
-            "id": 2,
-            "brand": "Zpack",
-            "name": "Zpack Duplex",
-            "price": "600",
-            "capacity": "2",
-            "image": "" 
-        },
-        {
-            "id": 3,
-            "brand": "Forclaz",
-            "name": "Forclaz trek 900",
-            "price": "130",
-            "capacity": "1",
-            "image": "" 
-        }
-    ]';
+    global $entityManager;
+
+    $produitRepository = $entityManager->getRepository('Produit');
+    $produit = $produitRepository->findAll();
+
+    $data = array();
+
+    foreach ($produit as $e) {
+        $elem = array(
+            "id" => $e->getId(),
+            "brand" => $e->getBrand(),
+            "name" => $e->getName(),
+            "price" => $e->getPrice(),
+            "capacity" => $e->getCapacity(),
+        );
+
+        array_push($data, $elem);
+    }
 
     $response = $response
         ->withHeader("Content-Type", "application/json;charset=utf-8");
 
     $response = addCorsHeaders($response);
-    $response->getBody()->write($flux);
+    $response->getBody()->write(json_encode($data));
     return $response;
 });
+
 
 function addCorsHeaders(Response $response): Response
 {
 
     $response =  $response
-        ->withHeader("Access-Control-Allow-Origin", 'https://nfe-php.herokuapp.com')
-        // ->withHeader("Access-Control-Allow-Origin", 'http://localhost')
+        ->withHeader("Access-Control-Allow-Origin", 'https://nfe-trioreau.herokuapp.com')
         ->withHeader("Access-Control-Allow-Headers", 'Content-Type, Authorization')
         ->withHeader("Access-Control-Allow-Methods", 'GET, POST, PUT, PATCH, DELETE,OPTIONS')
         ->withHeader("Access-Control-Expose-Headers", "Authorization");
